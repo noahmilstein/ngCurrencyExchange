@@ -12,6 +12,14 @@ import { tap } from 'rxjs/operators'
 export class AppComponent implements OnInit {
   title = 'ngCurrencyExchange'
 
+  // TODO ::
+  // build form with
+
+  // "currency from"
+  // "currency to"
+  // "value from"
+  // "value to"
+
   // TODO :: switch to NgRx store
   // TODO :: implement cryptocurrency exchange rates https://www.coingecko.com/en/api
 
