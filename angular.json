@@ -127,5 +127,8 @@
       }
     }
   },
-  "defaultProject": "ngCurrencyExchange"
+  "defaultProject": "ngCurrencyExchange",
+  "cli": {
+    "analytics": "ef039833-30af-4f2e-8698-e52c54b52470"
+  }
 }
