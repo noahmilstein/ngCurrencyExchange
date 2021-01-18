@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject, Observable } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { map, tap } from 'rxjs/operators'
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 
 
 @Component({
@@ -26,25 +27,43 @@ export class AppComponent implements OnInit {
   private readonly openExchangeRatesBaseUrl = 'http://openexchangerates.org/api/'
   private readonly currenciesUrl = this.openExchangeRatesBaseUrl + 'currencies.json'
 
-  currencies$ = new BehaviorSubject<object>({})
+  currencies$ = new BehaviorSubject<string[]>([])
 
-  constructor(private http: HttpClient) {}
+  conversionForm = this.fb.group({
+    from: ['', Validators.required],
+    to: ['', Validators.required],
+    fromValue: [1],
+    toValue: [null]
+  })
+
+  get from(): FormControl {
+    return this.conversionForm.get('from') as FormControl
+  }
+  // form level custom validation
+
+  constructor(private http: HttpClient, private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.resolveCurrencies()
-    this.currencies$.pipe(tap(console.log))
+    this.currencies$.pipe(tap(asd => console.log(asd, 'here')))
   }
 
-  getCurrencies(): Observable<object> {
-    return this.http.get<object>(this.currenciesUrl)
+  getCurrencies(): Observable<string[]> {
+    // return this.http.get<object>(this.currenciesUrl).pipe(map(Object.entries))
+    return this.http.get<object>(this.currenciesUrl).pipe(map(currencies => {
+      return Object.entries(currencies).map(currency => {
+        return currency.join(', ')
+      })
+    }))
   }
 
   resolveCurrencies(): void {
     if (sessionStorage.getItem('currencies')) {
       this.currencies$.next(JSON.parse(sessionStorage.getItem('currencies') as string))
     } else {
-      // tslint:disable-next-line: deprecation
+      // tslint:disable-next-line: deprecation (https://github.com/ReactiveX/rxjs/issues/4159#issuecomment-466630791)
       this.getCurrencies().subscribe(currencies => {
+        console.log(currencies)
         sessionStorage.setItem('currencies', JSON.stringify(currencies))
         this.currencies$.next(currencies)
       })

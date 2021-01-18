@@ -1,4 +1,44 @@
 <div class="content" role="main">
   HELLO WORLD
-  {{ currencies$ | async }}
+  <!-- {{ currencies$ | json }} -->
+
+  <form [formGroup]="conversionForm">
+
+    <mat-form-field class="example-full-width">
+      <mat-label>Number</mat-label>
+      <!-- WORKING HERE -->
+      <input type="text"
+            placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            [formControl]="from"
+            [matAutocomplete]="auto">
+            <!-- formControlName="from" -->
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of currencies$ | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+
+
+    <!-- <label>
+      From:
+      <input type="text" formControlName="from" required>
+    </label> -->
+    <label>
+      To:
+      <input type="text" formControlName="to" required>
+    </label>
+    <label>
+      Value:
+      <input type="text" formControlName="fromValue">
+    </label>
+    <label>
+      Value:
+      <input type="text" formControlName="toValue">
+    </label>
+  </form>
+
 </div>
