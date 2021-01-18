@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ReactiveFormsModule } from '@angular/forms'
 import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'
     HttpClientModule,
     MatAutocompleteModule,
     MatFormFieldModule,
+    MatInputModule,
     ReactiveFormsModule
   ],
   providers: [],
