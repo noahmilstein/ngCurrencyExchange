@@ -3,57 +3,13 @@
 
   <form [formGroup]="conversionForm">
 
-    <mat-form-field class="example-full-width">
-      <mat-label>From Currency:</mat-label>
-      <input type="text"
-            #fromCurrencyRef
-            placeholder="Pick one"
-            aria-label="From Currency"
-            matInput
-            formControlName="fromCurrency"
-            (focus)="handleCurrencyFocus(fromCurrencyRef.value)"
-            [matAutocomplete]="auto">
-
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredCurrencies$ | async" [value]="option">
-          {{option}}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-error *ngIf="fromCurrency.hasError('invalidCurrency')">
-        Please select a valid currency
-      </mat-error>
-    </mat-form-field>
 
     <!-- TODO :: add a swap button here to swap from and to selected currencies -->
 
-    <mat-form-field class="example-full-width">
-      <mat-label>To Currency:</mat-label>
-      <input type="text"
-            #toCurrencyRef
-            placeholder="Pick one"
-            aria-label="To Currency"
-            matInput
-            formControlName="toCurrency"
-            (focus)="handleCurrencyFocus(toCurrencyRef.value)"
-            [matAutocomplete]="auto">
-
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredCurrencies$ | async" [value]="option">
-          {{option}}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-error *ngIf="toCurrency.hasError('invalidCurrency')">
-        Please select a valid currency
-      </mat-error>
-    </mat-form-field>
 
     <label>
-      Value:
+      Value From:
       <input type="text" formControlName="fromValue">
-    </label>
-    <label>
-      Value:
-      <input type="text" formControlName="toValue">
     </label>
   </form>
 

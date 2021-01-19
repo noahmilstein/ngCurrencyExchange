@@ -6,19 +6,8 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn,
 
 const currencyFormValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value: CurrencyFormI = control.value
-  const { fromCurrency, toCurrency, fromValue, toValue } = value
-  return fromCurrency && toCurrency && (fromValue || toValue) ? null : { invalid: true }
-}
-
-function currencyValidator(allCurrenciesRaw: CurrenciesRawI): ValidatorFn {
-  return (control: AbstractControl): {[key: string]: string} | null => {
-    const code = control.value.match(/^\w{3}/)
-    if (code && allCurrenciesRaw[code]) {
-      return null
-    } else {
-      return { invalidCurrency: 'Invalid Currency' }
-    }
-  }
+  const { fromCurrency, toCurrency, fromValue } = value
+  return fromCurrency && toCurrency && fromValue ? null : { invalid: true }
 }
 
 interface CurrenciesRawI {
@@ -29,7 +18,6 @@ interface CurrencyFormI {
   fromCurrency: string
   toCurrency: string
   fromValue: number
-  toValue: number
 }
 
 @Component({
@@ -38,7 +26,11 @@ interface CurrencyFormI {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  // tslint:disable: deprecation (https://github.com/ReactiveX/rxjs/issues/4159#issuecomment-466630791)
   title = 'ngCurrencyExchange'
+
+  // convert to 3 form field with dropdowns instead of autocomplete
+  // then update dropdown to mimic this UX https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=EUR
 
   // WORKING HERE :: TODO LIST
   // call api to get value conversion
@@ -64,10 +56,9 @@ export class AppComponent implements OnInit {
   filteredCurrencies$ = new BehaviorSubject<string[]>([])
 
   conversionForm = this.fb.group({
-    fromCurrency: [''],
-    toCurrency: [''],
-    fromValue: [1],
-    toValue: [null]
+    fromCurrency: ['', Validators.required],
+    toCurrency: ['', Validators.required],
+    fromValue: [1]
   }, { validators: currencyFormValidator })
 
   get fromCurrency(): FormGroup {
@@ -87,63 +78,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.resolveCurrencies()
-    this.fromCurrency.setValidators([Validators.required, currencyValidator(this.allCurrenciesRaw)])
-    this.toCurrency.setValidators([Validators.required, currencyValidator(this.allCurrenciesRaw)])
-
-    // tslint:disable: deprecation (https://github.com/ReactiveX/rxjs/issues/4159#issuecomment-466630791)
-    this.fromCurrency.valueChanges.subscribe(from => {
-      this.setCurrencyFilter(from)
-      if (this.conversionForm.valid) {
-        this.getConversion(this.fromValue.value, this.fromCurrency.value, this.toCurrency.value)
-        // get the TO VALUE and update the toValue field
-      }
-    })
-    this.toCurrency.valueChanges.subscribe(to => {
-      this.setCurrencyFilter(to)
-      if (this.conversionForm.valid) {
-        this.getConversion(this.fromValue.value, this.fromCurrency.value, this.toCurrency.value)
-        // get the TO VALUE and update the toValue field
-      }
-    })
-    // this.conversionForm.valueChanges.subscribe(form => {
-    //   if (form.valid) {
-    //     // WORKING HERE
-    //     // call API and get and update the TO VALUE
-    //     this.getConversion(toVal, this.fromCurrency.value, this.toCurrency.value)
-    //     // https://openexchangerates.org/api/convert/1/USD/AED?app_id=app_id
-    //   }
-    // })
-    this.toValue.valueChanges.subscribe((toVal: number) => {
-      // if toVal is changing and form isValid then call API to update the FROM VALUE
-      if (this.conversionForm.valid) {
-        this.getConversion(toVal, this.toCurrency.value, this.fromCurrency.value)
-        // get the FROM VALUE and update the fromValue field
-      }
-    })
-    this.fromValue.valueChanges.subscribe((fromVal: number) => {
-      // if toVal is changing and form isValid then call API to update the FROM VALUE
-      if (this.conversionForm.valid) {
-        this.getConversion(fromVal, this.fromCurrency.value, this.toCurrency.value)
-        // get the TO VALUE and update the toValue field
-      }
-    })
-  }
-
-  setCurrencyFilter(filterText: string): void {
-    const filter = this.allCurrenciesFormatted.filter(currency => {
-      return currency.toLowerCase().includes(filterText.toLowerCase())
-    })
-    this.filteredCurrencies$.next(filter)
-  }
-
-  handleCurrencyFocus(currencyValue?: string): void {
-    if (currencyValue) {
-      // filter on pre-existing value
-      this.setCurrencyFilter(currencyValue)
-    } else {
-      // reset filter
-      this.filteredCurrencies$.next(this.allCurrenciesFormatted)
-    }
   }
 
   getCurrencies(): Observable<CurrenciesRawI> {

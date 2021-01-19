@@ -5,7 +5,6 @@ import { AppComponent } from './app.component'
 import { HttpClientModule } from '@angular/common/http'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { ReactiveFormsModule } from '@angular/forms'
-import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 
@@ -18,7 +17,6 @@ import { MatInputModule } from '@angular/material/input'
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-    MatAutocompleteModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule
