@@ -8,7 +8,8 @@ import { BaseUrl, Environment } from './environment.model'
 export const environment = new Environment({
   production: false,
   baseUrl: BaseUrl.Local,
-  openExchangeRatesApiKey: secrets.openExchangeRatesApiKey
+  openExchangeRatesApiKey: secrets.openExchangeRatesApiKey,
+  currencyScoopApiKey: secrets.currencyScoopApiKey
 })
 
 /*
