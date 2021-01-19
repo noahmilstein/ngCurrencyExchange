@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { BehaviorSubject, Observable } from 'rxjs'
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
+// import { environment } from 'src/environments/environment'
 
 const currencyFormValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value: CurrencyFormI = control.value
@@ -56,6 +57,7 @@ export class AppComponent implements OnInit {
 
   private readonly openExchangeRatesBaseUrl = 'http://openexchangerates.org/api/'
   private readonly currenciesUrl = this.openExchangeRatesBaseUrl + 'currencies.json'
+  private readonly convertUrl = this.openExchangeRatesBaseUrl + 'convert'
 
   allCurrenciesRaw: CurrenciesRawI = {}
   allCurrenciesFormatted: string[] = []
@@ -77,6 +79,9 @@ export class AppComponent implements OnInit {
   get toValue(): FormGroup {
     return this.conversionForm.get('toValue') as FormGroup
   }
+  get fromValue(): FormGroup {
+    return this.conversionForm.get('fromValue') as FormGroup
+  }
 
   constructor(private http: HttpClient, private fb: FormBuilder) {}
 
@@ -88,20 +93,38 @@ export class AppComponent implements OnInit {
     // tslint:disable: deprecation (https://github.com/ReactiveX/rxjs/issues/4159#issuecomment-466630791)
     this.fromCurrency.valueChanges.subscribe(from => {
       this.setCurrencyFilter(from)
+      if (this.conversionForm.valid) {
+        this.getConversion(this.fromValue.value, this.fromCurrency.value, this.toCurrency.value)
+        // get the TO VALUE and update the toValue field
+      }
     })
     this.toCurrency.valueChanges.subscribe(to => {
       this.setCurrencyFilter(to)
-    })
-    this.conversionForm.valueChanges.subscribe(form => {
-      if (form.valid) {
-        // WORKING HERE
-        // call API and get and update the TO VALUE
+      if (this.conversionForm.valid) {
+        this.getConversion(this.fromValue.value, this.fromCurrency.value, this.toCurrency.value)
+        // get the TO VALUE and update the toValue field
       }
     })
-    this.toValue.valueChanges.subscribe(toVal => {
+    // this.conversionForm.valueChanges.subscribe(form => {
+    //   if (form.valid) {
+    //     // WORKING HERE
+    //     // call API and get and update the TO VALUE
+    //     this.getConversion(toVal, this.fromCurrency.value, this.toCurrency.value)
+    //     // https://openexchangerates.org/api/convert/1/USD/AED?app_id=app_id
+    //   }
+    // })
+    this.toValue.valueChanges.subscribe((toVal: number) => {
+      // if toVal is changing and form isValid then call API to update the FROM VALUE
       if (this.conversionForm.valid) {
-        // WORKING HERE
-        // if toVal is changing and form isValid then call API to update the FROM VALUE
+        this.getConversion(toVal, this.toCurrency.value, this.fromCurrency.value)
+        // get the FROM VALUE and update the fromValue field
+      }
+    })
+    this.fromValue.valueChanges.subscribe((fromVal: number) => {
+      // if toVal is changing and form isValid then call API to update the FROM VALUE
+      if (this.conversionForm.valid) {
+        this.getConversion(fromVal, this.fromCurrency.value, this.toCurrency.value)
+        // get the TO VALUE and update the toValue field
       }
     })
   }
@@ -125,6 +148,12 @@ export class AppComponent implements OnInit {
 
   getCurrencies(): Observable<CurrenciesRawI> {
     return this.http.get<CurrenciesRawI>(this.currenciesUrl)
+  }
+
+  getConversion(value: number, from: string, to: string): void {
+  // getConversion(value: number, from: string, to: string): Observable<object> {
+    console.log('CONVERT', {from, to, value})
+    // return this.http.get<object>(`${this.convertUrl}/${value}/${from}/${to}?app_id=${environment.openExchangeRatesApiKey}`)
   }
 
   resolveCurrencies(): void {
