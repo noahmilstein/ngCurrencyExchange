@@ -1,0 +1,44 @@
+<!-- WORKING HERE :: convert to search field with search results set above all currencies
+  as seen here https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=EUR -->
+<form [formGroup]="conversionForm">
+  <mat-form-field appearance="fill">
+    <mat-label>From Currency:</mat-label>
+    <mat-select formControlName="fromCurrency" placeholder="Select a currency">
+      <mat-option *ngFor="let currency of allCurrenciesFormatted" [value]="currency.currencyCode">
+        {{ currency.currencyCode }}: {{ currency.currencyName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-icon-button color="primary" aria-label="Swap horizontal icon" (click)="handleSwap()">
+    <mat-icon>swap_horiz</mat-icon>
+  </button>
+
+  <mat-form-field appearance="fill">
+    <mat-label>To Currency:</mat-label>
+    <mat-select formControlName="toCurrency" placeholder="Select a currency">
+      <mat-option *ngFor="let currency of allCurrenciesFormatted" [value]="currency.currencyCode">
+        {{ currency.currencyCode }}: {{ currency.currencyName }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Value From:</mat-label>
+    <input matInput type="text" formControlName="fromValue" placeholder="Value from" [value]="fromValue">
+  </mat-form-field>
+</form>
+
+<div *ngIf="conversionResult">
+  {{conversionResult.amount}} {{conversionResult.from}} =
+  {{conversionResult.to}} {{conversionResult.value}}
+  <br>
+  1 EUR {{ conversionResult.amount | divide: conversionResult.value }}
+  <br>
+  1 USD {{ conversionResult.value | divide: conversionResult.amount }}
+  <br>
+  Last Updated {{conversionResult.timestamp}}
+  <!-- WORKING HERE :: format and display time series data in line graph -->
+  <!-- from :: click for more info etc -->
+  <!-- to :: click for more info etc -->
+</div>

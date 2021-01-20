@@ -13,10 +13,14 @@ import { MatButtonModule } from '@angular/material/button'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { CurrencyScoopService } from './services/currency-scoop.service'
+import { ConversionFormComponent } from './components/conversion-form/conversion-form.component'
+import { DividePipe } from './pipes/divide.pipe'
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ConversionFormComponent,
+    DividePipe
   ],
   imports: [
     AppRoutingModule,
