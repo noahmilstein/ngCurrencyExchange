@@ -1,28 +1,16 @@
-export class Currency {
-  currencyCode: string
-  currencyName: string
-
-  constructor(init?: Partial<Currency>) {
-    Object.assign(this, init)
-  }
-}
-// WORKING HERE :: break up into appropriate separate files
-
-export interface CurrencyFormI {
-  fromCurrency: string
-  toCurrency: string
-  fromValue: number
-}
-
+// all currency scoop API models/interfaces here
+// SEE HERE :: https://currencyscoop.com/api-documentation
 interface MetaI {
   code: number
   disclaimer: string
 }
 
 export interface GetCurrenciesResI {
+  // API call to GET all currencies
+  // 'https://api.currencyscoop.com/v1/currencies'
   meta: MetaI
   response: {
-    fiats: CurrenciesRawI
+  fiats: CurrenciesRawI
   }
 }
 
@@ -38,12 +26,14 @@ export interface CurrencyResI {
 }
 
 export interface GetConvertResI {
+  // API call to GET conversion between 2 currencies
+  // 'https://api.currencyscoop.com/v1/convert'
   meta: MetaI
   response: ConvertResI
 }
 
 export interface ConvertResI {
-  amount: number
+  amount: string
   date: string
   from: string
   timestamp: number
