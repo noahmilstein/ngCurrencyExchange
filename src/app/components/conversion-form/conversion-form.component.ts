@@ -5,6 +5,7 @@ import { ConvertResI } from 'src/app/models/currency-scoop.model'
 import { Currency, CurrencyFormFields, CurrencyFormI } from 'src/app/models/currency.model'
 import { StorageCategories } from 'src/app/models/storage.model'
 import { CurrencyScoopService } from 'src/app/services/currency-scoop.service'
+// import * as dayjs from 'dayjs'
 
 const currencyFormValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value: CurrencyFormI = control.value
@@ -45,17 +46,21 @@ export class ConversionFormComponent implements OnInit {
     this.conversionForm.valueChanges.subscribe((form: CurrencyFormI) => {
       if (this.conversionForm.valid) {
         this.currencyService.getConversion(form.fromValue, form.fromCurrency, form.toCurrency)
-          .pipe(first()).subscribe(convertRes => {
-            this.conversionResult = convertRes.response
+        .pipe(first()).subscribe(convertRes => {
+          this.conversionResult = convertRes.response
         })
-        // WORKING HERE :: get time series data and display in line graph
-        // const today
-        // const _30DaysHence
-        // this.currencyService.getTimeSeries(form.fromCurrency).pipe(first()).subscribe(latest => {
-        //   // base: string, startDate: Date, endDate: Date, symbols: string[]
+        // NOTE :: /timeseries requires $99/month which is just not worth it and makes this project pointless to continue
+        // Switching to a different project instead of spending tons of money for no good reason
+        // const today = dayjs().startOf('day')
+        // const thirtyDaysPast = today.subtract(30, 'day')
+        // this.currencyService.getTimeSeries(
+        //   form.fromCurrency,
+        //   today.format('YYYY-MM-DD'),
+        //   thirtyDaysPast.format('YYYY-MM-DD'),
+        //   [form.toCurrency]
+        // ).pipe(first()).subscribe(latest => {
         //   console.log(latest)
         // })
-        // https://api.currencyscoop.com/v1/latest
       }
     })
   }
