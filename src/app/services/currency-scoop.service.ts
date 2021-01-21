@@ -11,7 +11,7 @@ export class CurrencyScoopService {
   private readonly currencyScoopBaseUrl = 'https://api.currencyscoop.com/v1/'
   private readonly currenciesUrl = this.currencyScoopBaseUrl + 'currencies'
   private readonly convertUrl = this.currencyScoopBaseUrl + 'convert'
-  private readonly timeSeriesUrl = this.currencyScoopBaseUrl + 'timeseries'
+  // private readonly timeSeriesUrl = this.currencyScoopBaseUrl + 'timeseries'
   private readonly apiKeyFragment = `api_key=${environment.currencyScoopApiKey}`
 
   constructor(protected http: HttpClient) {}
@@ -28,11 +28,10 @@ export class CurrencyScoopService {
     return this.http.get<GetConvertResI>(this.convertUrl + convertFragment)
   }
 
-  getTimeSeries(base: string, startDate: Date, endDate: Date, symbols: string[]): Observable<object> {
-    // WORKING HERE :: create interfaces for endpoint response
-    const latestFragment = `?base=${base}&start_date=${startDate}&end_date=${endDate}&symbols=${symbols}&${this.apiKeyFragment}`
-    return this.http.get<object>(this.timeSeriesUrl + latestFragment)
-  }
+  // getTimeSeries(base: string, startDate: string, endDate: string, symbols: string[]): Observable<object> {
+  //   const latestFragment = `?base=${base}&start_date=${startDate}&end_date=${endDate}&symbols=[${symbols}]&${this.apiKeyFragment}`
+  //   return this.http.get<object>(this.timeSeriesUrl + latestFragment)
+  // }
 
   formatGetCurrenciesRes(allCurrencies: GetCurrenciesResI): Currency[] {
     return Object.entries(allCurrencies.response.fiats).map(currency => {
