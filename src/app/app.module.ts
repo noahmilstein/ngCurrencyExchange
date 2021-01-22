@@ -14,7 +14,7 @@ import { ConversionFormComponent } from './components/conversion-form/conversion
 import { ChartsModule } from 'ng2-charts'
 import { DividePipe } from './pipes/divide.pipe'
 import { CoinGeckoApiService } from './services/coin-gecko-api.service'
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
 import { CapitalizePipe } from './pipes/capitalize.pipe'
 
 @NgModule({

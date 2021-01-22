@@ -4,6 +4,7 @@ import { Currency, CurrencyFormFields, CurrencyFormI } from '../../models/curren
 import { StorageCategories } from '../../models/storage.model'
 import { CoinGeckoApiService } from '../../services/coin-gecko-api.service'
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject'
+import { first } from 'rxjs/operators'
 // import * as dayjs from 'dayjs'
 
 const currencyFormValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -24,7 +25,8 @@ export class ConversionFormComponent implements OnInit {
     fromCurrency: [null, Validators.required],
     toCurrency: [null, Validators.required],
     toSearch: [''],
-    fromValue: [1, Validators.required]
+    fromValue: [1, Validators.required],
+    priceResult: [null]
   }, { validators: currencyFormValidator })
 
   get fromCurrency(): FormControl {
@@ -42,6 +44,9 @@ export class ConversionFormComponent implements OnInit {
   get fromValue(): FormControl {
     return this.conversionForm.get(CurrencyFormFields.FromValue) as FormControl
   }
+  get priceResult(): FormControl {
+    return this.conversionForm.get(CurrencyFormFields.PriceResult) as FormControl
+  }
 
   allCurrenciesFormatted: Currency[] = []
   currencyFilter$ = new BehaviorSubject<Currency[]>([])
@@ -53,14 +58,14 @@ export class ConversionFormComponent implements OnInit {
     this.conversionForm.valueChanges.subscribe((form: CurrencyFormI) => {
       if (this.conversionForm.valid) {
         // WORKING HERE :: make conversion call
-        // display resulting data
         // add routing to details page
         // more graphs
-        console.log('VALID FORM',  form)
-        // this.currencyService.getConversion(form.fromValue, form.fromCurrency, form.toCurrency)
-        // .pipe(first()).subscribe(convertRes => {
-        //   this.conversionResult = convertRes.response
-        // })
+        this.currencyService.getPrice(form.fromCurrency.name, form.toCurrency.symbol)
+          .pipe(first()).subscribe(price => {
+            const from = price[form.fromCurrency.name.toLowerCase()]
+            const toPrice = from[form.toCurrency.symbol]
+            this.priceResult.setValue(toPrice, { emitEvent: false })
+          })
       }
     })
     this.fromSearch.valueChanges.subscribe((fromSearch: string) => {

@@ -4,6 +4,7 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 import { StorageCategories } from '../models/storage.model'
 import { Currency } from '../models/currency.model'
+import { CoinPrice } from '../models/coin-gecko-api.model'
 
 @Injectable()
 export class CoinGeckoApiService {
@@ -11,9 +12,15 @@ export class CoinGeckoApiService {
   private readonly coinGeckoBaseUrl = 'https://api.coingecko.com/api/v3/'
   private readonly supportedCurrenciesUrl = this.coinGeckoBaseUrl + 'simple/supported_vs_currencies'
   private readonly allCurrenciesUrl = this.coinGeckoBaseUrl + 'coins/list'
+  private readonly getPriceUrl = this.coinGeckoBaseUrl + 'simple/price'
   allCurrencies: object[]
 
   constructor(protected http: HttpClient) {}
+
+  getPrice(fromCurrency: string, toCurrency: string): Observable<CoinPrice> {
+    // https://api.coingecko.com/api/v3/simple/price
+    return this.http.get<CoinPrice>(`${this.getPriceUrl}?ids=${fromCurrency}&vs_currencies=${toCurrency}`)
+  }
 
   getCurrencies(): Observable<Currency[]> {
     return combineLatest([this.getAllCurrencies(), this.getAllSupportedCurrencies()])
