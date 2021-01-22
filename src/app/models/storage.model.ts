@@ -1,3 +1,4 @@
 export enum StorageCategories {
-  Currencies = 'currencies'
+  Currencies = 'currencies',
+  AllCurrencies = 'allCurrencies'
 }

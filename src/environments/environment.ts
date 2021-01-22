@@ -2,14 +2,13 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import { secrets } from 'secrets'
 import { BaseUrl, Environment } from './environment.model'
 
 export const environment = new Environment({
   production: false,
   baseUrl: BaseUrl.Local,
-  openExchangeRatesApiKey: secrets.openExchangeRatesApiKey,
-  currencyScoopApiKey: secrets.currencyScoopApiKey
+  // openExchangeRatesApiKey: secrets.openExchangeRatesApiKey,
+  // currencyScoopApiKey: secrets.currencyScoopApiKey
 })
 
 /*

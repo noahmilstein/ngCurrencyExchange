@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core'
 import { AbstractControl, FormBuilder, FormControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
-import { first } from 'rxjs/operators'
-import { ConvertResI } from 'src/app/models/currency-scoop.model'
-import { Currency, CurrencyFormFields, CurrencyFormI } from 'src/app/models/currency.model'
-import { StorageCategories } from 'src/app/models/storage.model'
-import { CurrencyScoopService } from 'src/app/services/currency-scoop.service'
+import { Currency, CurrencyFormFields, CurrencyFormI } from '../../models/currency.model'
+import { StorageCategories } from '../../models/storage.model'
+import { CoinGeckoApiService } from '../../services/coin-gecko-api.service'
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject'
 // import * as dayjs from 'dayjs'
 
 const currencyFormValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
@@ -21,63 +20,99 @@ const currencyFormValidator: ValidatorFn = (control: AbstractControl): Validatio
 export class ConversionFormComponent implements OnInit {
   // tslint:disable: deprecation (https://github.com/ReactiveX/rxjs/issues/4159#issuecomment-466630791)
   conversionForm = this.fb.group({
-    fromCurrency: ['', Validators.required],
-    toCurrency: ['', Validators.required],
-    fromValue: [1]
+    fromSearch: [''],
+    fromCurrency: [null, Validators.required],
+    toCurrency: [null, Validators.required],
+    toSearch: [''],
+    fromValue: [1, Validators.required]
   }, { validators: currencyFormValidator })
 
   get fromCurrency(): FormControl {
     return this.conversionForm.get(CurrencyFormFields.FromCurrency) as FormControl
   }
+  get fromSearch(): FormControl {
+    return this.conversionForm.get(CurrencyFormFields.FromSearch) as FormControl
+  }
   get toCurrency(): FormControl {
     return this.conversionForm.get(CurrencyFormFields.ToCurrency) as FormControl
+  }
+  get toSearch(): FormControl {
+    return this.conversionForm.get(CurrencyFormFields.ToSearch) as FormControl
   }
   get fromValue(): FormControl {
     return this.conversionForm.get(CurrencyFormFields.FromValue) as FormControl
   }
 
   allCurrenciesFormatted: Currency[] = []
-  conversionResult: ConvertResI
+  currencyFilter$ = new BehaviorSubject<Currency[]>([])
 
-  constructor(private currencyService: CurrencyScoopService, private fb: FormBuilder) { }
+  constructor(private currencyService: CoinGeckoApiService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.resolveCurrencies()
     this.conversionForm.valueChanges.subscribe((form: CurrencyFormI) => {
       if (this.conversionForm.valid) {
-        this.currencyService.getConversion(form.fromValue, form.fromCurrency, form.toCurrency)
-        .pipe(first()).subscribe(convertRes => {
-          this.conversionResult = convertRes.response
-        })
-        // NOTE :: /timeseries requires $99/month which is just not worth it and makes this project pointless to continue
-        // Switching to a different project instead of spending tons of money for no good reason
-        // const today = dayjs().startOf('day')
-        // const thirtyDaysPast = today.subtract(30, 'day')
-        // this.currencyService.getTimeSeries(
-        //   form.fromCurrency,
-        //   today.format('YYYY-MM-DD'),
-        //   thirtyDaysPast.format('YYYY-MM-DD'),
-        //   [form.toCurrency]
-        // ).pipe(first()).subscribe(latest => {
-        //   console.log(latest)
+        // WORKING HERE :: make conversion call
+        // display resulting data
+        // add routing to details page
+        // more graphs
+        console.log('VALID FORM',  form)
+        // this.currencyService.getConversion(form.fromValue, form.fromCurrency, form.toCurrency)
+        // .pipe(first()).subscribe(convertRes => {
+        //   this.conversionResult = convertRes.response
         // })
       }
     })
+    this.fromSearch.valueChanges.subscribe((fromSearch: string) => {
+      this.setSearchFilter(fromSearch)
+    })
+    this.toSearch.valueChanges.subscribe((toSearch: string) => {
+      this.setSearchFilter(toSearch)
+    })
+  }
+
+  handleOptionClick(formControl: FormControl, coin: Currency): void {
+    formControl.setValue(coin)
+  }
+
+  handleFocus(searchFieldValue?: string): void {
+    if (searchFieldValue) {
+      this.setSearchFilter(searchFieldValue)
+    } else {
+      this.currencyFilter$.next(this.allCurrenciesFormatted)
+    }
+  }
+
+  setSearchFilter(searchText: string): void {
+    const filteredResults = this.allCurrenciesFormatted.filter(coin => {
+      const search = searchText.toLowerCase()
+      return coin.symbol.includes(search) || coin.id.includes(search) || coin.name.includes(search)
+    })
+    this.currencyFilter$.next(filteredResults)
   }
 
   handleSwap(): void {
     const prevFromCurrency = this.fromCurrency.value
     const prevToCurrency = this.toCurrency.value
-    this.conversionForm.patchValue({ fromCurrency: prevToCurrency, toCurrency: prevFromCurrency })
+    const prevFromSearch = this.fromSearch.value
+    const prevToSearch = this.toSearch.value
+    this.conversionForm.patchValue({
+      fromCurrency: prevToCurrency,
+      toCurrency: prevFromCurrency,
+      fromSearch: prevToSearch,
+      toSearch: prevFromSearch
+    })
   }
 
   resolveCurrencies(): void {
     if (sessionStorage.getItem(StorageCategories.Currencies)) {
       this.allCurrenciesFormatted = JSON.parse(sessionStorage.getItem(StorageCategories.Currencies) as string)
+      this.currencyFilter$.next(this.allCurrenciesFormatted)
     } else {
       this.currencyService.getCurrencies().subscribe(currencies => {
         sessionStorage.setItem(StorageCategories.Currencies, JSON.stringify(currencies))
         this.allCurrenciesFormatted = currencies
+        this.currencyFilter$.next(this.allCurrenciesFormatted)
       })
     }
   }

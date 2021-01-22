@@ -32,6 +32,10 @@
       true,
       140
     ],
+    "ordered-imports": [true, {
+      "import-sources-order": "any",
+      "named-imports-order": "case-insensitive"
+    }],
     "member-ordering": [
       true,
       {

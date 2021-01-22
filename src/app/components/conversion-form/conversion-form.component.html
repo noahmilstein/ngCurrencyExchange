@@ -1,44 +1,43 @@
 <!-- WORKING HERE :: convert to search field with search results set above all currencies
   as seen here https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=EUR -->
-<form [formGroup]="conversionForm">
-  <mat-form-field appearance="fill">
-    <mat-label>From Currency:</mat-label>
-    <mat-select formControlName="fromCurrency" placeholder="Select a currency">
-      <mat-option *ngFor="let currency of allCurrenciesFormatted" [value]="currency.currencyCode">
-        {{ currency.currencyCode }}: {{ currency.currencyName }}
+
+<form [formGroup]="conversionForm" class="conversion-form">
+  <mat-form-field>
+    <mat-label>Convert From Currency</mat-label>
+      <input
+        matInput
+        formControlName="fromSearch"
+        placeholder="Ex. Bitcoin"
+        [matAutocomplete]="autoFrom"
+        (focus)="handleFocus(fromSearch.value)">
+      <mat-autocomplete #autoFrom="matAutocomplete">
+      <mat-option *ngFor="let coin of (currencyFilter$ | async)" [value]="coin.name" (click)="handleOptionClick(fromCurrency, coin)">
+        {{ coin.symbol.toUpperCase() }}: {{ coin.name }}
       </mat-option>
-    </mat-select>
+    </mat-autocomplete>
   </mat-form-field>
 
-  <button mat-icon-button color="primary" aria-label="Swap horizontal icon" (click)="handleSwap()">
-    <mat-icon>swap_horiz</mat-icon>
+  <button mat-icon-button aria-label="horizontal swap icon button" (click)="handleSwap()">
+    <mat-icon aria-hidden="false" aria-label="swap horizontal">swap_horiz</mat-icon>
   </button>
 
-  <mat-form-field appearance="fill">
-    <mat-label>To Currency:</mat-label>
-    <mat-select formControlName="toCurrency" placeholder="Select a currency">
-      <mat-option *ngFor="let currency of allCurrenciesFormatted" [value]="currency.currencyCode">
-        {{ currency.currencyCode }}: {{ currency.currencyName }}
+  <mat-form-field>
+    <mat-label>Convert To Currency</mat-label>
+      <input
+        matInput
+        formControlName="toSearch"
+        placeholder="Ex. Bitcoin"
+        [matAutocomplete]="autoTo"
+        (focus)="handleFocus(toSearch.value)">
+      <mat-autocomplete #autoTo="matAutocomplete">
+      <mat-option *ngFor="let coin of (currencyFilter$ | async)" [value]="coin.name" (click)="handleOptionClick(toCurrency, coin)">
+        {{ coin.symbol.toUpperCase() }}: {{ coin.name }}
       </mat-option>
-    </mat-select>
+    </mat-autocomplete>
   </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Value From:</mat-label>
-    <input matInput type="text" formControlName="fromValue" placeholder="Value from" [value]="fromValue">
+  <mat-form-field>
+    <mat-label>Amount</mat-label>
+    <input type="number" matInput formControlName="fromValue">
   </mat-form-field>
 </form>
-
-<div *ngIf="conversionResult">
-  {{conversionResult.amount}} {{conversionResult.from}} =
-  {{conversionResult.to}} {{conversionResult.value}}
-  <br>
-  1 EUR {{ conversionResult.amount | divide: conversionResult.value }}
-  <br>
-  1 USD {{ conversionResult.value | divide: conversionResult.amount }}
-  <br>
-  Last Updated {{conversionResult.timestamp}}
-  <!-- WORKING HERE :: format and display time series data in line graph -->
-  <!-- from :: click for more info etc -->
-  <!-- to :: click for more info etc -->
-</div>
