@@ -57,9 +57,11 @@ export class ConversionFormComponent implements OnInit {
     this.resolveCurrencies()
     this.conversionForm.valueChanges.subscribe((form: CurrencyFormI) => {
       if (this.conversionForm.valid) {
-        // WORKING HERE :: make conversion call
-        // add routing to details page
-        // more graphs
+        // WORKING HERE
+        // get historical market data
+        // display historical market data in graph
+        // individual currency details page
+        // explore swapping API source to coinmarketcap (https://coinmarketcap.com/api/documentation/v1/)
         this.currencyService.getPrice(form.fromCurrency.name, form.toCurrency.symbol)
           .pipe(first()).subscribe(price => {
             const from = price[form.fromCurrency.name.toLowerCase()]
