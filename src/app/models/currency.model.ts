@@ -1,20 +1,23 @@
 export class Currency {
-  currencyCode: string
-  currencyName: string
-
-  constructor(init?: Partial<Currency>) {
-    Object.assign(this, init)
-  }
+  id: string
+  symbol: string
+  name: string
 }
 
 export interface CurrencyFormI {
-  fromCurrency: string
-  toCurrency: string
+  fromCurrency: Currency
+  fromSearch: string
+
+  toCurrency: Currency
+  toSearch: string
+
   fromValue: number
 }
 
 export enum CurrencyFormFields {
   FromCurrency = 'fromCurrency',
+  FromSearch = 'fromSearch',
   ToCurrency = 'toCurrency',
+  ToSearch = 'toSearch',
   FromValue = 'fromValue'
 }
