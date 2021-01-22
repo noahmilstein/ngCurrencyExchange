@@ -7,11 +7,10 @@ export class Currency {
 export interface CurrencyFormI {
   fromCurrency: Currency
   fromSearch: string
-
   toCurrency: Currency
   toSearch: string
-
-  fromValue: number
+  fromValue: number,
+  priceResult: number
 }
 
 export enum CurrencyFormFields {
@@ -19,5 +18,6 @@ export enum CurrencyFormFields {
   FromSearch = 'fromSearch',
   ToCurrency = 'toCurrency',
   ToSearch = 'toSearch',
-  FromValue = 'fromValue'
+  FromValue = 'fromValue',
+  PriceResult = 'priceResult'
 }

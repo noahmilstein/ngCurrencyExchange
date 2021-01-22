@@ -41,3 +41,13 @@
     <input type="number" matInput formControlName="fromValue">
   </mat-form-field>
 </form>
+
+<div *ngIf="priceResult && conversionForm.valid">
+  <div *ngIf="fromValue.value > 1">
+    {{ fromValue.value }}x {{ fromCurrency.value.symbol }} = {{ priceResult.value * fromValue.value }} {{ toCurrency.value.symbol }}
+  </div>
+  <div>
+    1 {{ fromCurrency.value.symbol }} = {{ priceResult.value }} {{ toCurrency.value.symbol }}<br>
+    1 {{ toCurrency.value.symbol }} = {{ 1/ priceResult.value }} {{ fromCurrency.value.symbol }}
+  </div>
+</div>
