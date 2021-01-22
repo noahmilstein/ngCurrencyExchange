@@ -5,7 +5,6 @@ import { StorageCategories } from '../../models/storage.model'
 import { CoinGeckoApiService } from '../../services/coin-gecko-api.service'
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject'
 import { first } from 'rxjs/operators'
-// import * as dayjs from 'dayjs'
 
 const currencyFormValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const value: CurrencyFormI = control.value
@@ -58,7 +57,6 @@ export class ConversionFormComponent implements OnInit {
     this.conversionForm.valueChanges.subscribe((form: CurrencyFormI) => {
       if (this.conversionForm.valid) {
         // WORKING HERE
-        // get historical market data
         // display historical market data in graph
         // individual currency details page
         // explore swapping API source to coinmarketcap (https://coinmarketcap.com/api/documentation/v1/)
@@ -68,8 +66,8 @@ export class ConversionFormComponent implements OnInit {
             const toPrice = from[form.toCurrency.symbol]
             this.priceResult.setValue(toPrice, { emitEvent: false })
           })
-      }
-    })
+        }
+      })
     this.fromSearch.valueChanges.subscribe((fromSearch: string) => {
       this.setSearchFilter(fromSearch)
     })
