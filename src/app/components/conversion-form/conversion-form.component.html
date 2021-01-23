@@ -1,4 +1,4 @@
-<form [formGroup]="conversionForm" class="conversion-form">
+<form [formGroup]="conversionForm">
   <mat-form-field>
     <mat-label>Convert From Currency</mat-label>
       <input
@@ -51,6 +51,6 @@
 
 <app-market-history
   *ngIf="this.conversionForm.valid"
-  [coinName]="fromCurrency.value.name.toLowerCase()"
-  [vsCurrency]="toCurrency.value.symbol.toLowerCase()">
+  [coinId]="fromCurrency.value.id"
+  [vsCurrency]="toCurrency.value.symbol">
 </app-market-history>

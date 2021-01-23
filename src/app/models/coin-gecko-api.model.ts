@@ -10,3 +10,9 @@ export interface MarketHistoryI {
   prices: number[][]
   total_volumes: number[][]
 }
+
+export enum MarketHistorySeries {
+  market_caps = 'Market Caps',
+  prices = 'Prices',
+  total_volumes = 'Total Volumes'
+}

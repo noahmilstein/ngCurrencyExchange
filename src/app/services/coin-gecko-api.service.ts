@@ -24,7 +24,7 @@ export class CoinGeckoApiService {
     return this.http.get<CoinPriceI>(`${this.getPriceUrl}?ids=${fromCurrency}&vs_currencies=${toCurrency}`)
   }
 
-  getMarketHistory(coinName: string, vsCurrency: string, days: number): Observable<MarketHistoryI> {
+  getMarketHistory(coinName: string, vsCurrency: string, days: number | string): Observable<MarketHistoryI> {
     // https://api.coingecko.com/api/v3/coins/{coinName}/market_chart?vs_currency={vsCurrency}&days={days}
     const url = `${this.coinsUrl}/${coinName}${this.marketHistoryUrl}?vs_currency=${vsCurrency}&days=${days}`
     return this.http.get<MarketHistoryI>(url)
