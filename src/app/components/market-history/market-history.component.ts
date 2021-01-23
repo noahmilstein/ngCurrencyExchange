@@ -66,10 +66,10 @@ export class MarketHistoryComponent implements OnChanges {
       data: number[], label: string[]
     }
     Object.entries(marketData).forEach((keyValTuple: [string, number[][]]) => {
-      const dataLabelSeries = keyValTuple[1].reduce((acc: { data: number[], label: string[]}, tuple) => {
-        const dateTime = dayjs(tuple[0]).format('MM-DD-YY:mm:ssZ[Z]')
-        const btcPriceInEth = tuple[1]
-        return { data: [...acc.data, btcPriceInEth], label: [...acc.label, dateTime] } as DataLabelSeriesI
+      const dataLabelSeries = keyValTuple[1].reduce((acc: DataLabelSeriesI, tuple) => {
+        const dateTime = dayjs(tuple[0]).format('M-D-YY, H:m')
+        const price = tuple[1]
+        return { data: [...acc.data, price], label: [...acc.label, dateTime] } as DataLabelSeriesI
       }, { data: [], label: [] } as DataLabelSeriesI)
       this.lineChartData.push({
         label: MarketHistorySeries[keyValTuple[0]  as keyof typeof MarketHistorySeries],

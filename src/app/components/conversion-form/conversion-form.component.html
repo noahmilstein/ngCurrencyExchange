@@ -39,7 +39,7 @@
   </mat-form-field>
 </form>
 
-<div *ngIf="priceResult && conversionForm.valid">
+<div *ngIf="priceResult.value && conversionForm.valid">
   <div *ngIf="fromValue.value > 1">
     {{ fromValue.value }}x {{ fromCurrency.value.symbol.toUpperCase() }} = {{ priceResult.value * fromValue.value }} {{ toCurrency.value.symbol.toUpperCase() }}
   </div>
