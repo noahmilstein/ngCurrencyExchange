@@ -4,22 +4,30 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 import { StorageCategories } from '../models/storage.model'
 import { Currency } from '../models/currency.model'
-import { CoinPrice } from '../models/coin-gecko-api.model'
+import { CoinPriceI, MarketHistoryI } from '../models/coin-gecko-api.model'
 
 @Injectable()
 export class CoinGeckoApiService {
   // tslint:disable: deprecation (https://github.com/ReactiveX/rxjs/issues/4159#issuecomment-466630791)
   private readonly coinGeckoBaseUrl = 'https://api.coingecko.com/api/v3/'
   private readonly supportedCurrenciesUrl = this.coinGeckoBaseUrl + 'simple/supported_vs_currencies'
-  private readonly allCurrenciesUrl = this.coinGeckoBaseUrl + 'coins/list'
+  private readonly coinsUrl = this.coinGeckoBaseUrl + 'coins'
+  private readonly allCurrenciesUrl = this.coinsUrl + '/list'
+  private readonly marketHistoryUrl = '/market_chart'
   private readonly getPriceUrl = this.coinGeckoBaseUrl + 'simple/price'
   allCurrencies: object[]
 
   constructor(protected http: HttpClient) {}
 
-  getPrice(fromCurrency: string, toCurrency: string): Observable<CoinPrice> {
+  getPrice(fromCurrency: string, toCurrency: string): Observable<CoinPriceI> {
     // https://api.coingecko.com/api/v3/simple/price
-    return this.http.get<CoinPrice>(`${this.getPriceUrl}?ids=${fromCurrency}&vs_currencies=${toCurrency}`)
+    return this.http.get<CoinPriceI>(`${this.getPriceUrl}?ids=${fromCurrency}&vs_currencies=${toCurrency}`)
+  }
+
+  getMarketHistory(coinName: string, vsCurrency: string, days: number | string): Observable<MarketHistoryI> {
+    // https://api.coingecko.com/api/v3/coins/{coinName}/market_chart?vs_currency={vsCurrency}&days={days}
+    const url = `${this.coinsUrl}/${coinName}${this.marketHistoryUrl}?vs_currency=${vsCurrency}&days=${days}`
+    return this.http.get<MarketHistoryI>(url)
   }
 
   getCurrencies(): Observable<Currency[]> {

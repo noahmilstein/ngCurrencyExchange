@@ -1,7 +1,4 @@
-<!-- WORKING HERE :: convert to search field with search results set above all currencies
-  as seen here https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=EUR -->
-
-<form [formGroup]="conversionForm" class="conversion-form">
+<form [formGroup]="conversionForm">
   <mat-form-field>
     <mat-label>Convert From Currency</mat-label>
       <input
@@ -44,10 +41,16 @@
 
 <div *ngIf="priceResult && conversionForm.valid">
   <div *ngIf="fromValue.value > 1">
-    {{ fromValue.value }}x {{ fromCurrency.value.symbol }} = {{ priceResult.value * fromValue.value }} {{ toCurrency.value.symbol }}
+    {{ fromValue.value }}x {{ fromCurrency.value.symbol.toUpperCase() }} = {{ priceResult.value * fromValue.value }} {{ toCurrency.value.symbol.toUpperCase() }}
   </div>
   <div>
-    1 {{ fromCurrency.value.symbol }} = {{ priceResult.value }} {{ toCurrency.value.symbol }}<br>
-    1 {{ toCurrency.value.symbol }} = {{ 1/ priceResult.value }} {{ fromCurrency.value.symbol }}
+    1 {{ fromCurrency.value.symbol.toUpperCase() }} = {{ priceResult.value }} {{ toCurrency.value.symbol.toUpperCase() }}<br>
+    1 {{ toCurrency.value.symbol.toUpperCase() }} = {{ 1/ priceResult.value }} {{ fromCurrency.value.symbol.toUpperCase() }}
   </div>
 </div>
+
+<app-market-history
+  *ngIf="this.conversionForm.valid"
+  [coinId]="fromCurrency.value.id"
+  [vsCurrency]="toCurrency.value.symbol">
+</app-market-history>

@@ -1,0 +1,21 @@
+<div *ngIf="lineChartData && lineChartLabels">
+  <mat-form-field appearance="fill">
+    <mat-label>Time Range</mat-label>
+    <mat-select [(value)]="historicalRange.value" (selectionChange)="populateChartData()">
+      <mat-option
+        [value]="option.value"
+        *ngFor="let option of historicalRanges">
+          {{ option.display }}
+        </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <canvas baseChart width="400" height="400"
+    [datasets]="lineChartData"
+    [labels]="lineChartLabels"
+    [options]="lineChartOptions"
+    [colors]="lineChartColors"
+    [legend]="true"
+    chartType="line">
+  </canvas>
+</div>
